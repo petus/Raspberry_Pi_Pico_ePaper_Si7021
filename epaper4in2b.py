@@ -204,6 +204,104 @@ class EPD:
             self.draw_char_at(frame_buffer, refcolumn, y, text[index], font, colored)
             # Decrement the column position by 16
             refcolumn += font.width
+            
+    def draw_line(self, frame_buffer, x0, y0, x1, y1, colored):
+        # Bresenham algorithm
+        dx = abs(x1 - x0)
+        sx = 1 if x0 < x1 else -1
+        dy = -abs(y1 - y0)
+        sy = 1 if y0 < y1 else -1
+        err = dx + dy
+        while((x0 != x1) and (y0 != y1)):
+            self.set_pixel(frame_buffer, x0, y0 , colored)
+            if (2 * err >= dy):
+                err += dy
+                x0 += sx
+            if (2 * err <= dx):
+                err += dx
+                y0 += sy
+
+
+    def draw_horizontal_line(self, frame_buffer, x, y, width, colored):
+        for i in range(x, x + width):
+            self.set_pixel(frame_buffer, i, y, colored)
+
+
+    def draw_vertical_line(self, frame_buffer, x, y, height, colored):
+        for i in range(y, y + height):
+            self.set_pixel(frame_buffer, x, i, colored)
+
+
+    def draw_rectangle(self, frame_buffer, x0, y0, x1, y1, colored):
+        min_x = x0 if x1 > x0 else x1
+        max_x = x1 if x1 > x0 else x0
+        min_y = y0 if y1 > y0 else y1
+        max_y = y1 if y1 > y0 else y0
+        self.draw_horizontal_line(frame_buffer, min_x, min_y, max_x - min_x + 1, colored)
+        self.draw_horizontal_line(frame_buffer, min_x, max_y, max_x - min_x + 1, colored)
+        self.draw_vertical_line(frame_buffer, min_x, min_y, max_y - min_y + 1, colored)
+        self.draw_vertical_line(frame_buffer, max_x, min_y, max_y - min_y + 1, colored)
+
+
+    def draw_filled_rectangle(self, frame_buffer, x0, y0, x1, y1, colored):
+        min_x = x0 if x1 > x0 else x1
+        max_x = x1 if x1 > x0 else x0
+        min_y = y0 if y1 > y0 else y1
+        max_y = y1 if y1 > y0 else y0
+        for i in range(min_x, max_x + 1):
+            self.draw_vertical_line(frame_buffer, i, min_y, max_y - min_y + 1, colored)
+
+
+    def draw_circle(self, frame_buffer, x, y, radius, colored):
+        # Bresenham algorithm
+        x_pos = -radius
+        y_pos = 0
+        err = 2 - 2 * radius
+        if (x >= self.width or y >= self.height):
+            return
+        while True:
+            self.set_pixel(frame_buffer, x - x_pos, y + y_pos, colored)
+            self.set_pixel(frame_buffer, x + x_pos, y + y_pos, colored)
+            self.set_pixel(frame_buffer, x + x_pos, y - y_pos, colored)
+            self.set_pixel(frame_buffer, x - x_pos, y - y_pos, colored)
+            e2 = err
+            if (e2 <= y_pos):
+                y_pos += 1
+                err += y_pos * 2 + 1
+                if(-x_pos == y_pos and e2 <= x_pos):
+                    e2 = 0
+            if (e2 > x_pos):
+                x_pos += 1
+                err += x_pos * 2 + 1
+            if x_pos > 0:
+                break
+
+
+    def draw_filled_circle(self, frame_buffer, x, y, radius, colored):
+        # Bresenham algorithm
+        x_pos = -radius
+        y_pos = 0
+        err = 2 - 2 * radius
+        if (x >= self.width or y >= self.height):
+            return
+        while True:
+            self.set_pixel(frame_buffer, x - x_pos, y + y_pos, colored)
+            self.set_pixel(frame_buffer, x + x_pos, y + y_pos, colored)
+            self.set_pixel(frame_buffer, x + x_pos, y - y_pos, colored)
+            self.set_pixel(frame_buffer, x - x_pos, y - y_pos, colored)
+            self.draw_horizontal_line(frame_buffer, x + x_pos, y + y_pos, 2 * (-x_pos) + 1, colored)
+            self.draw_horizontal_line(frame_buffer, x + x_pos, y - y_pos, 2 * (-x_pos) + 1, colored)
+            e2 = err
+            if (e2 <= y_pos):
+                y_pos += 1
+                err += y_pos * 2 + 1
+                if(-x_pos == y_pos and e2 <= x_pos):
+                    e2 = 0
+            if (e2 > x_pos):
+                x_pos  += 1
+                err += x_pos * 2 + 1
+            if x_pos > 0:
+                break
 
     # to wake call reset() or init()
     def sleep(self):
