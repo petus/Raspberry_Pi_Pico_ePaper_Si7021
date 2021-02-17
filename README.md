@@ -7,6 +7,4 @@ Dominik Kapusta: micropython-waveshare-epd - https://github.com/ayoy/micropython
 
 Mike Causer: micropython-waveshare-epaper - https://github.com/mcauser/micropython-waveshare-epaper
 
-I merged both libraries to one. I'm able to use 4.2" b/w/r and easily change the text font.
-
-TODO: import graphics features
+I merged both libraries to one. I'm able to use 4.2" b/w/r and easily change the text font and create lines, circles etc.
