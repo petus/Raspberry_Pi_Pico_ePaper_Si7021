@@ -149,6 +149,24 @@ class EPD:
 
         self._command(DISPLAY_REFRESH)
         self.wait_until_idle()
+       
+    def set_rotate(self, rotate):
+        if (rotate == ROTATE_0):
+            self.rotate = ROTATE_0
+            self.width = EPD_WIDTH
+            self.height = EPD_HEIGHT
+        elif (rotate == ROTATE_90):
+            self.rotate = ROTATE_90
+            self.width = EPD_HEIGHT
+            self.height = EPD_WIDTH
+        elif (rotate == ROTATE_180):
+            self.rotate = ROTATE_180
+            self.width = EPD_WIDTH
+            self.height = EPD_HEIGHT
+        elif (rotate == ROTATE_270):
+            self.rotate = ROTATE_270
+            self.width = EPD_HEIGHT
+            self.height = EPD_WIDTH
         
     def set_pixel(self, frame_buffer, x, y, colored):
         if (x < 0 or x >= self.width or y < 0 or y >= self.height):
